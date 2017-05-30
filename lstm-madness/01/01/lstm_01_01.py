@@ -103,7 +103,7 @@ train_y,  test_y = dataset_y[0:train_size], dataset_y[train_size:len(dataset_y)]
 train_x = numpy.reshape(stage_train_x, (stage_train_x.shape[0], 1, stage_train_x.shape[1]))
 test_x = numpy.reshape(stage_test_x, (stage_test_x.shape[0], 1, stage_test_x.shape[1]))
 # >>> train_x.shape       
-# (2387, 1, 55)
+# (3063, 1, 1)
 # the middle value is the lookback 
 
 
@@ -111,7 +111,7 @@ test_x = numpy.reshape(stage_test_x, (stage_test_x.shape[0], 1, stage_test_x.sha
 number_of_features = train_x.shape[2]
 
 model = Sequential()
-model.add(LSTM(1, input_dim=number_of_features))
+model.add(LSTM(1, input_shape=(1, number_of_features)))
 model.add(Dense(1))
 model.compile(loss='mean_squared_error', optimizer='adam')
 model.fit(train_x, train_y, nb_epoch=1000, batch_size=32, verbose=2)
