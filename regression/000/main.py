@@ -101,6 +101,12 @@ p = ggplot(aes(x='dt', y='ret'), data=df)
 p + geom_line() + ggtitle("XLF returns")
 
 
+# Plot absolute returns
+
+p = ggplot(aes(x='dt', y='abs_ret'), data=df)
+p + geom_line() + ggtitle("XLF absolute returns")
+
+
 # Plot Density of returns
 
 df.ret.plot.kde()
@@ -119,6 +125,10 @@ plt.figure()
 lag_plot(df.ret)
 plt.show()
 
+
+plt.figure()
+lag_plot(df.abs_ret)
+plt.show()
 
 # Plot autocorrelation of returns
 
