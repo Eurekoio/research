@@ -126,6 +126,8 @@ lag_plot(df.ret)
 plt.show()
 
 
+# Lag plot absolute returns
+
 plt.figure()
 lag_plot(df.abs_ret)
 plt.show()
@@ -141,4 +143,14 @@ plt.show()
 
 plt.figure()
 autocorrelation_plot(df.abs_ret.dropna())
+plt.show()
+
+
+# 20 period autocorrelation of absolute returns
+
+plt.acorr(df.abs_ret.dropna(), maxlags=20)
+plt.show()
+
+# 20 period autcorrelation of returns
+plt.acorr(df.ret.dropna(), maxlags=20)
 plt.show()
