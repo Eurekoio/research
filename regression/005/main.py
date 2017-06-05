@@ -44,8 +44,10 @@ def query(paramObj):
                 , ticker
                 , CASE 
                     WHEN p_rank > {top_percentile}
-                        THEN  next_day_ret
+                        AND kelly > 1
+                        THEN next_day_ret 
                     WHEN p_rank < {bottom_percentile}
+                        AND kelly < -1
                         THEN -next_day_ret
                     ELSE NULL
                     END AS pnl
@@ -70,6 +72,10 @@ def query(paramObj):
                                 dt
                             , ticker
                             , ret AS x
+                            , CASE WHEN STDDEV(ret) OVER deriv_wdw  > 0
+                                THEN AVG(ret) OVER deriv_wdw / STDDEV(ret) OVER deriv_wdw 
+                                ELSE NULL
+                                END AS kelly
                             , next_day_ret
                             , regr_slope(next_day_ret, ret) OVER deriv_wdw AS slope
                             , regr_intercept(next_day_ret, ret) OVER deriv_wdw AS intercept
@@ -98,40 +104,8 @@ def plot_title(paramObj):
         top_percentile=paramObj['top_percentile'], 
         bottom_percentile=paramObj['bottom_percentile'])
 
-# 5 Day 80 20
-params = dict(periods=5, top_percentile=.9, bottom_percentile=.1)
-
-df = pd.read_sql_query(query(params), con=conn)
-p = ggplot(aes(x='dt', y='cum_pnl'), data=df)
-p + geom_line() + ggtitle(plot_title(params))
-
-
 # 5 Day 90 10
-
-params = dict(periods=5, top_percentile=.8, bottom_percentile=.2)
-
-df = pd.read_sql_query(query(params), con=conn)
-p = ggplot(aes(x='dt', y='cum_pnl'), data=df)
-p + geom_line() + ggtitle(plot_title(params))
-
-# 5 day 50 50
-params = dict(periods=5, top_percentile=.5, bottom_percentile=.5)
-
-df = pd.read_sql_query(query(params), con=conn)
-p = ggplot(aes(x='dt', y='cum_pnl'), data=df)
-p + geom_line() + ggtitle(plot_title(params))
-
-
-# 250 day 50 50
-params = dict(periods=250, top_percentile=.5, bottom_percentile=.5)
-
-df = pd.read_sql_query(query(params), con=conn)
-p = ggplot(aes(x='dt', y='cum_pnl'), data=df)
-p + geom_line() + ggtitle(plot_title(params))
-
-
-# 250 day 80 20
-params = dict(periods=250, top_percentile=.8, bottom_percentile=.2)
+params = dict(periods=5, top_percentile=.9, bottom_percentile=.1)
 
 df = pd.read_sql_query(query(params), con=conn)
 p = ggplot(aes(x='dt', y='cum_pnl'), data=df)
