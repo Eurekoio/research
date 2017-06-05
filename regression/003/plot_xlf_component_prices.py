@@ -42,13 +42,12 @@ sql = """
     , SUM(ret) OVER (PARTITION BY ticker ORDER BY dt) AS cum_pnl
     FROM xlf_components_returns
     WHERE dt > '1999-01-01'
-    AND ticker NOT IN ('AIG', 'C', 'ETFC')
 """
 
 df = pd.read_sql_query(sql, con=conn)
 
 
-plot_title = "XLF Components CUM PNL excl. (AIG, C, ETFC)"
+plot_title = "XLF Components CUM PNL"
 p = ggplot(aes(x='dt', y='cum_pnl'), data=df)
 g = p + geom_line() + \
     facet_wrap("ticker") + \

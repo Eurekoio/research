@@ -44,12 +44,12 @@ SELECT
   dt
 , ticker
 , CASE 
-    WHEN LAG(close, 1) OVER (PARTITION BY ticker ORDER BY dt) > 0
-      THEN (close - LAG(close, 1) OVER (PARTITION BY ticker ORDER BY dt)) / LAG(close, 1) OVER (PARTITION BY ticker ORDER BY dt)
+    WHEN LAG(adj_close, 1) OVER (PARTITION BY ticker ORDER BY dt) > 0
+      THEN (adj_close - LAG(adj_close, 1) OVER (PARTITION BY ticker ORDER BY dt)) / LAG(adj_close, 1) OVER (PARTITION BY ticker ORDER BY dt)
     ELSE NULL END AS ret
 , CASE
-    WHEN LEAD(close, 1) OVER (PARTITION BY ticker ORDER BY dt) > 0
-      THEN (LEAD(close, 1) OVER (PARTITION BY ticker ORDER BY dt) - close ) / close
+    WHEN LEAD(adj_close, 1) OVER (PARTITION BY ticker ORDER BY dt) > 0
+      THEN (LEAD(adj_close, 1) OVER (PARTITION BY ticker ORDER BY dt) - adj_close ) / adj_close
       ELSE NULL END AS next_day_ret
 FROM xlf_components_data;
 
